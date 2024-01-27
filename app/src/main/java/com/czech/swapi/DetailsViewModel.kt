@@ -14,14 +14,14 @@ class DetailsViewModel : ViewModel() {
 
     private val starRepository = SwapiRepository()
 
-    private val mutableData = MutableLiveData<UiState<Person>>() // Note the change in UiState type
-    val immutableData: LiveData<UiState<Person>> = mutableData // Note the change in UiState type
+    private val mutableData = MutableLiveData<UiState<Person>>()
+    val immutableData: LiveData<UiState<Person>> = mutableData
 
     fun getPersonDetails(personId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 mutableData.postValue(UiState(isLoading = true))
-                val request = starRepository.getPersonById(personId) // Call the new endpoint
+                val request = starRepository.getPersonById(personId)
                 val person = request.body()
                 mutableData.postValue(UiState(data = person))
 

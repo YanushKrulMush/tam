@@ -17,6 +17,12 @@ class MainViewModel : ViewModel() {
     private val mutableData = MutableLiveData<UiState<List<Person>>>()
     val immutableData: LiveData<UiState<List<Person>>> = mutableData
 
+    val filterQuery = MutableLiveData("")
+
+    fun updateFilterQuery(text: String){
+        filterQuery.postValue(text)
+    }
+
     fun getData() {
         viewModelScope.launch(Dispatchers.IO) {
             try {

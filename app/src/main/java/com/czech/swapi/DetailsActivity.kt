@@ -8,14 +8,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import com.czech.swapi.repository.model.Person
 import com.czech.swapi.ui.theme.SwapiTheme
 
@@ -28,12 +33,6 @@ class DetailsActivity : ComponentActivity() {
         val id = intent.getIntExtra("CUSTOM_ID", -1)
         viewModel.getPersonDetails(id)
 
-//        if (id != -1) {
-//            viewModel.getPersonDetails(id)
-//        } else {
-//
-//        }
-
         setContent {
             SwapiTheme {
                 Surface(
@@ -43,11 +42,17 @@ class DetailsActivity : ComponentActivity() {
                     val uiState = viewModel.immutableData.observeAsState(UiState()).value
 
                     when {
-                        uiState.isLoading -> { MyLoadingView() }
+                        uiState.isLoading -> {
+                            MyLoadingView()
+                        }
 
-                        uiState.error != null -> { MyErrorView(uiState.error) }
+                        uiState.error != null -> {
+                            MyErrorView(uiState.error)
+                        }
 
-                        uiState.data != null -> { uiState.data?.let { DetailsView(it) } }
+                        uiState.data != null -> {
+                            uiState.data?.let { DetailsView(it) }
+                        }
                     }
                 }
             }
@@ -64,6 +69,20 @@ fun DetailsView(person: Person) {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp)
+                .clip(CircleShape)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.luke),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+
         Text(
             text = "Name: ${person.name}",
             style = MaterialTheme.typography.bodyMedium
@@ -76,25 +95,5 @@ fun DetailsView(person: Person) {
         Text("Birth Year: ${person.birth_year}")
         Text("Gender: ${person.gender}")
         Text("Homeworld: ${person.homeworld}")
-
-        Text("Films:")
-        for (film in person.films) {
-            Text(film)
-        }
-
-        Text("Species:")
-        for (species in person.species) {
-            Text(species)
-        }
-
-        Text("Vehicles:")
-        for (vehicle in person.vehicles) {
-            Text(vehicle)
-        }
-
-        Text("Starships:")
-        for (starship in person.starships) {
-            Text(starship)
-        }
     }
 }
